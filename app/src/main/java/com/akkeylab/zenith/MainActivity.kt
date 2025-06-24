@@ -1,13 +1,18 @@
 package com.akkeylab.zenith
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerSize
@@ -22,11 +27,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.MaterialTheme
 import androidx.xr.compose.platform.LocalHasXrSpatialFeature
 import androidx.xr.compose.platform.LocalSession
 import androidx.xr.compose.platform.LocalSpatialCapabilities
@@ -82,11 +92,13 @@ fun MySpatialContent(onRequestHomeSpaceMode: () -> Unit) {
 
     SpatialPanel(SubspaceModifier.width(1280.dp).height(800.dp).resizable().movable()) {
         Surface {
-            MainContent(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(48.dp)
-            )
+            Box(modifier = Modifier.fillMaxSize()) {
+                MainContent(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 64.dp)
+                )
+            }
         }
         Orbiter(
             position = OrbiterEdge.Top,
@@ -105,11 +117,11 @@ fun MySpatialContent(onRequestHomeSpaceMode: () -> Unit) {
                 session = session,
                 model = model,
                 pose = Pose(
-                    translation = Vector3(0f, -0.9f, 0.2f),
+                    translation = Vector3(0f, -0.5f, 0.2f),
                     rotation = Quaternion.fromEulerAngles(0f, 0f, 0f)
                 )
             )
-            modelEntity.setScale(0.8f)
+            modelEntity.setScale(0.5f)
         }
         DisposableEffect(Unit) {
             onDispose {
@@ -140,7 +152,37 @@ fun My2DContent(onRequestFullSpaceMode: () -> Unit) {
 
 @Composable
 fun MainContent(modifier: Modifier = Modifier) {
-    Text(text = stringResource(R.string.hello_android_xr), modifier = modifier)
+    val ctx = LocalContext.current
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "3D Anime Character girl for Blender C1",
+            color = Color.Magenta,
+            fontSize = 12.sp,
+            modifier = Modifier.clickable {
+                ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://skfb.ly/oyACQ")))
+            }
+        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "by CGCOOL is licensed under",
+                style = MaterialTheme.typography.labelSmall
+            )
+            Text(
+                text = "Creative Commons Attribution",
+                color = Color.Magenta,
+                fontSize = 12.sp,
+                modifier = Modifier.clickable {
+                    ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://creativecommons.org/licenses/by/4.0/")))
+                }
+            )
+        }
+    }
 }
 
 @Composable
