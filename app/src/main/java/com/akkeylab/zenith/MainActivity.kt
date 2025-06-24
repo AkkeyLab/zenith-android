@@ -17,6 +17,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -25,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.xr.compose.platform.LocalHasXrSpatialFeature
+import androidx.xr.compose.platform.LocalSession
 import androidx.xr.compose.platform.LocalSpatialCapabilities
 import androidx.xr.compose.platform.LocalSpatialConfiguration
 import androidx.xr.compose.spatial.EdgeOffset
@@ -38,7 +42,13 @@ import androidx.xr.compose.subspace.layout.height
 import androidx.xr.compose.subspace.layout.movable
 import androidx.xr.compose.subspace.layout.resizable
 import androidx.xr.compose.subspace.layout.width
+import androidx.xr.runtime.math.Pose
+import androidx.xr.runtime.math.Quaternion
+import androidx.xr.runtime.math.Vector3
+import androidx.xr.scenecore.GltfModel
+import androidx.xr.scenecore.GltfModelEntity
 import com.akkeylab.zenith.ui.theme.ZenithTheme
+import kotlinx.coroutines.guava.await
 
 class MainActivity : ComponentActivity() {
 
@@ -67,6 +77,9 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("RestrictedApi")
 @Composable
 fun MySpatialContent(onRequestHomeSpaceMode: () -> Unit) {
+    val session = checkNotNull(LocalSession.current)
+    var modelEntity = remember<GltfModelEntity?> { null }
+
     SpatialPanel(SubspaceModifier.width(1280.dp).height(800.dp).resizable().movable()) {
         Surface {
             MainContent(
@@ -85,6 +98,23 @@ fun MySpatialContent(onRequestHomeSpaceMode: () -> Unit) {
                 onClick = onRequestHomeSpaceMode,
                 modifier = Modifier.size(56.dp)
             )
+        }
+        LaunchedEffect(key1 = Unit) {
+            val model = GltfModel.create(session, "models/girl.gltf").await()
+            modelEntity = GltfModelEntity.create(
+                session = session,
+                model = model,
+                pose = Pose(
+                    translation = Vector3(0f, -0.9f, 0.2f),
+                    rotation = Quaternion.fromEulerAngles(0f, 0f, 0f)
+                )
+            )
+            modelEntity.setScale(0.8f)
+        }
+        DisposableEffect(Unit) {
+            onDispose {
+                modelEntity?.dispose()
+            }
         }
     }
 }

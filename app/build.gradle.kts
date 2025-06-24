@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.compose)
     implementation(libs.runtime)
     implementation(libs.androidx.scenecore)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.10.2")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
