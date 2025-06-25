@@ -37,6 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.xr.compose.platform.LocalHasXrSpatialFeature
 import androidx.xr.compose.platform.LocalSession
 import androidx.xr.compose.platform.LocalSpatialCapabilities
@@ -88,7 +91,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MySpatialContent(onRequestHomeSpaceMode: () -> Unit) {
     val session = checkNotNull(LocalSession.current)
-    var modelEntity = remember<GltfModelEntity?> { null }
+    var modelEntity by remember { mutableStateOf<GltfModelEntity?>(null) }
 
     SpatialPanel(SubspaceModifier.width(1280.dp).height(800.dp).resizable().movable()) {
         Surface {
@@ -113,7 +116,7 @@ fun MySpatialContent(onRequestHomeSpaceMode: () -> Unit) {
         }
         LaunchedEffect(key1 = Unit) {
             val model = GltfModel.create(session, "models/girl.gltf").await()
-            modelEntity = GltfModelEntity.create(
+            val entity = GltfModelEntity.create(
                 session = session,
                 model = model,
                 pose = Pose(
@@ -121,8 +124,9 @@ fun MySpatialContent(onRequestHomeSpaceMode: () -> Unit) {
                     rotation = Quaternion.fromEulerAngles(0f, 0f, 0f)
                 )
             )
-            modelEntity.setScale(0.5f)
-//            modelEntity.startAnimation(loop = true, animationName = "Take 001")
+            entity.setScale(0.5f)
+//            entity.startAnimation(loop = true, animationName = "Take 001")
+            modelEntity = entity
         }
         DisposableEffect(Unit) {
             onDispose {
