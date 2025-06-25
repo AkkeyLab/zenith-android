@@ -122,6 +122,7 @@ fun MySpatialContent(onRequestHomeSpaceMode: () -> Unit) {
                 )
             )
             modelEntity.setScale(0.5f)
+//            modelEntity.startAnimation(loop = true, animationName = "Take 001")
         }
         DisposableEffect(Unit) {
             onDispose {
