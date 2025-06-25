@@ -12,6 +12,7 @@ It explores how similar spatial interactions can be built using Jetpack XR SDK.
 ## ⚠️ glTF & Licensing Notes
 - All 3D assets used in this project are under Creative Commons Attribution 4.0:
     - [3D Anime Character girl for Blender C1](https://skfb.ly/oyACQ) by CGCOOL
+    - [Shibahu](https://skfb.ly/ovSrM) by 腱鞘炎の人
     - Proper attribution is required if you use these assets elsewhere.
 
 ## 🪪 License
