@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-06-24T16:28:17.052313Z">
+        <DropdownSelection timestamp="2025-07-01T14:34:28.260465Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/akkeylab/.android/avd/XR_Device.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/akkeylab/.android/avd/XR_Headset.avd" />
             </handle>
           </Target>
         </DropdownSelection>
