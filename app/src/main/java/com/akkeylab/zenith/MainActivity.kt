@@ -83,6 +83,14 @@ private data class ModelConfig(
     val scale: Float,
     val animationName: String?
 )
+
+private data class CreditInfo(
+    val title: String,
+    val titleUrl: String,
+    val authorText: String,
+    val licenseText: String,
+    val licenseUrl: String
+)
 class MainActivity : ComponentActivity() {
 
     @SuppressLint("RestrictedApi")
@@ -123,7 +131,32 @@ fun MainSpatialContent() {
             shadowElevation = 8.dp
         ) {
             Box {
+                val creditInfo = when (selectedTab) {
+                    0 -> CreditInfo(
+                        title = "3D Anime Character girl for Blender C1",
+                        titleUrl = "https://skfb.ly/oyACQ",
+                        authorText = "by CGCOOL is licensed under ",
+                        licenseText = "Creative Commons Attribution",
+                        licenseUrl = "http://creativecommons.org/licenses/by/4.0/"
+                    )
+                    1 -> CreditInfo(
+                        title = "Smol Ame in an Upcycled Terrarium [HololiveEn]",
+                        titleUrl = "https://skfb.ly/ooJO8",
+                        authorText = "by Seafoam is licensed under ",
+                        licenseText = "Creative Commons Attribution",
+                        licenseUrl = "http://creativecommons.org/licenses/by/4.0/"
+                    )
+                    else -> CreditInfo(
+                        title = "Unknown Model",
+                        titleUrl = "#",
+                        authorText = "",
+                        licenseText = "",
+                        licenseUrl = "#"
+                    )
+                }
+
                 CreditsView(
+                    credit = creditInfo,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(bottom = 64.dp)
@@ -193,7 +226,10 @@ fun MainSpatialContent() {
 }
 
 @Composable
-fun CreditsView(modifier: Modifier = Modifier) {
+private fun CreditsView(
+    credit: CreditInfo,
+    modifier: Modifier = Modifier
+) {
     val ctx = LocalContext.current
 
     Column(
@@ -203,27 +239,24 @@ fun CreditsView(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "3D Anime Character girl for Blender C1",
+            text = credit.title,
             color = Color.Magenta,
             fontSize = 12.sp,
             modifier = Modifier.clickable {
-                ctx.startActivity(Intent(Intent.ACTION_VIEW, "https://skfb.ly/oyACQ".toUri()))
+                ctx.startActivity(Intent(Intent.ACTION_VIEW, credit.titleUrl.toUri()))
             }
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "by CGCOOL is licensed under",
+                text = credit.authorText,
                 style = MaterialTheme.typography.labelSmall
             )
             Text(
-                text = "Creative Commons Attribution",
+                text = credit.licenseText,
                 color = Color.Magenta,
                 fontSize = 12.sp,
                 modifier = Modifier.clickable {
-                    ctx.startActivity(Intent(
-                        Intent.ACTION_VIEW,
-                        "http://creativecommons.org/licenses/by/4.0/".toUri()
-                    ))
+                    ctx.startActivity(Intent(Intent.ACTION_VIEW, credit.licenseUrl.toUri()))
                 }
             )
         }
