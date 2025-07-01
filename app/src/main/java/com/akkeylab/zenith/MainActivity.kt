@@ -95,7 +95,7 @@ class MainActivity : ComponentActivity() {
         setSubspaceContent {
             ZenithTheme {
                 Subspace {
-                    MySpatialContent()
+                    MainSpatialContent()
                 }
             }
         }
@@ -104,7 +104,7 @@ class MainActivity : ComponentActivity() {
 
 @SuppressLint("RestrictedApi")
 @Composable
-fun MySpatialContent() {
+fun MainSpatialContent() {
     val session = checkNotNull(LocalSession.current)
     var modelEntity by remember { mutableStateOf<GltfModelEntity?>(null) }
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -123,7 +123,7 @@ fun MySpatialContent() {
             shadowElevation = 8.dp
         ) {
             Box {
-                MainContent(
+                CreditsView(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(bottom = 64.dp)
@@ -193,7 +193,7 @@ fun MySpatialContent() {
 }
 
 @Composable
-fun MainContent(modifier: Modifier = Modifier) {
+fun CreditsView(modifier: Modifier = Modifier) {
     val ctx = LocalContext.current
 
     Column(
