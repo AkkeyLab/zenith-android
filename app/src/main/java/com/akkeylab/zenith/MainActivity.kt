@@ -77,6 +77,12 @@ import androidx.xr.compose.spatial.Orbiter
 import androidx.xr.compose.spatial.OrbiterEdge
 import androidx.xr.compose.subspace.layout.SpatialRoundedCornerShape
 
+private data class ModelConfig(
+    val path: String,
+    val translation: Vector3,
+    val scale: Float,
+    val animationName: String?
+)
 class MainActivity : ComponentActivity() {
 
     @SuppressLint("RestrictedApi")
@@ -111,13 +117,12 @@ fun MySpatialContent() {
             .movable()
     ) {
         Surface(
-            modifier = Modifier.fillMaxSize(),
             shape = RoundedCornerShape(32.dp),
             color = Color.White.copy(alpha = 0.9f),
             tonalElevation = 8.dp,
             shadowElevation = 8.dp
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box {
                 MainContent(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
@@ -125,38 +130,27 @@ fun MySpatialContent() {
                 )
             }
         }
+
         LaunchedEffect(selectedTab) {
             modelEntity?.dispose()
 
-            val modelPath = when (selectedTab) {
-                0 -> "models/girl.gltf"
-                1 -> "models/animation/scene.gltf"
-                else -> "models/girl.gltf"
+            val config = when (selectedTab) {
+                0 -> ModelConfig("models/girl.gltf", Vector3(0f, -0.5f, 0.2f), 0.5f, null)
+                1 -> ModelConfig("models/animation/scene.gltf", Vector3(0f, -0.1f, 0.2f), 0.2f, "Animation")
+                else -> ModelConfig("models/girl.gltf", Vector3(0f, -0.5f, 0.2f), 0.5f, null)
             }
-            val model = GltfModel.create(session, modelPath).await()
 
-            val translation = when (selectedTab) {
-                0 -> Vector3(0f, -0.5f, 0.2f)
-                1 -> Vector3(0f, -0.1f, 0.2f)
-                else -> Vector3(0f, -0.5f, 0.2f)
-            }
+            val model = GltfModel.create(session, config.path).await()
             val entity = GltfModelEntity.create(
                 session = session,
                 model = model,
                 pose = Pose(
-                    translation = translation,
+                    translation = config.translation,
                     rotation = Quaternion.fromEulerAngles(0f, 0f, 0f)
                 )
             )
-            val scale = when (selectedTab) {
-                0 -> 0.5f
-                1 -> 0.2f
-                else -> 0.5f
-            }
-            entity.setScale(scale)
-            if (selectedTab == 1) {
-                entity.startAnimation(loop = true, animationName = "Animation")
-            }
+            entity.setScale(config.scale)
+            config.animationName?.let { entity.startAnimation(loop = true, animationName = it) }
             modelEntity = entity
         }
         DisposableEffect(Unit) {
@@ -164,6 +158,7 @@ fun MySpatialContent() {
                 modelEntity?.dispose()
             }
         }
+
         Orbiter(
             position = OrbiterEdge.Start,
             alignment = Alignment.CenterVertically,
@@ -171,18 +166,13 @@ fun MySpatialContent() {
             shape = SpatialRoundedCornerShape(CornerSize(percent = 50))
         ) {
             Surface(
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(400.dp),
+                modifier = Modifier.width(100.dp).height(250.dp),
                 color = Color.White.copy(alpha = 0.85f),
                 shape = RoundedCornerShape(32.dp),
                 shadowElevation = 8.dp
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(24.dp),
-                    verticalArrangement = Arrangement.Center,
+                    verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     OrbiterButton(
@@ -190,8 +180,6 @@ fun MySpatialContent() {
                         selected = selectedTab == 0,
                         contentDescription = "Static Model"
                     ) { selectedTab = 0 }
-
-                    Spacer(modifier = Modifier.height(16.dp))
 
                     OrbiterButton(
                         icon = Icons.Filled.PlayArrow,
@@ -274,11 +262,11 @@ fun OrbiterButton(
 @Composable
 fun OrbiterButtonPreview() {
     Column(
-        verticalArrangement = Arrangement.spacedBy(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .background(Color(0xFFF0F0F0))
-            .padding(24.dp)
+            .padding(16.dp)
     ) {
         OrbiterButton(
             Icons.Filled.Person,
