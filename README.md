@@ -4,6 +4,7 @@ It explores how similar spatial interactions can be built using Jetpack XR SDK.
 
 ![sample-1](images/sample_1.png)
 ![sample-2](images/sample_2.png)
+![sample-3](images/sample_3.png)
 
 ## 💻 Requirements
 - macOS running on Apple Silicon
