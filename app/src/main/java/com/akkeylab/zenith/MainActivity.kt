@@ -201,7 +201,6 @@ fun MainSpatialContent() {
             Surface(
                 modifier = Modifier.width(100.dp).height(250.dp),
                 color = Color.White.copy(alpha = 0.85f),
-                shape = RoundedCornerShape(32.dp),
                 shadowElevation = 8.dp
             ) {
                 Column(
