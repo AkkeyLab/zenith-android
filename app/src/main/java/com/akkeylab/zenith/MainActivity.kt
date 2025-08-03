@@ -11,7 +11,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
@@ -28,12 +27,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -42,7 +38,6 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -50,13 +45,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.xr.compose.platform.LocalSession
-import androidx.xr.compose.platform.LocalSpatialConfiguration
-import androidx.xr.compose.platform.setSubspaceContent
 import androidx.xr.compose.spatial.Subspace
 import androidx.xr.compose.subspace.SpatialPanel
 import androidx.xr.compose.subspace.layout.SubspaceModifier
@@ -70,15 +60,15 @@ import androidx.xr.runtime.math.Vector3
 import androidx.xr.scenecore.GltfModel
 import androidx.xr.scenecore.GltfModelEntity
 import com.akkeylab.zenith.ui.theme.ZenithTheme
-import kotlinx.coroutines.guava.await
 import androidx.core.net.toUri
-import androidx.xr.compose.spatial.EdgeOffset
+import androidx.xr.compose.spatial.ContentEdge
 import androidx.xr.compose.spatial.Orbiter
-import androidx.xr.compose.spatial.OrbiterEdge
 import androidx.xr.compose.subspace.layout.SpatialRoundedCornerShape
+import java.nio.file.Paths
+import java.nio.file.Path
 
 private data class ModelConfig(
-    val path: String,
+    val path: Path,
     val translation: Vector3,
     val scale: Float,
     val animationName: String?
@@ -98,9 +88,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        setContent {}
-
-        setSubspaceContent {
+        setContent {
             ZenithTheme {
                 Subspace {
                     MainSpatialContent()
@@ -168,12 +156,12 @@ fun MainSpatialContent() {
             modelEntity?.dispose()
 
             val config = when (selectedTab) {
-                0 -> ModelConfig("models/girl.gltf", Vector3(0f, -0.5f, 0.2f), 0.5f, null)
-                1 -> ModelConfig("models/animation/scene.gltf", Vector3(0f, -0.1f, 0.2f), 0.2f, "Animation")
-                else -> ModelConfig("models/girl.gltf", Vector3(0f, -0.5f, 0.2f), 0.5f, null)
+                0 -> ModelConfig(Paths.get("models", "girl.gltf"), Vector3(0f, -0.5f, 0.2f), 0.5f, null)
+                1 -> ModelConfig(Paths.get("models", "animation/scene.gltf"), Vector3(0f, -0.1f, 0.2f), 0.2f, "Animation")
+                else -> ModelConfig(Paths.get("models", "girl.gltf"), Vector3(0f, -0.5f, 0.2f), 0.5f, null)
             }
 
-            val model = GltfModel.create(session, config.path).await()
+            val model = GltfModel.create(session, config.path)
             val entity = GltfModelEntity.create(
                 session = session,
                 model = model,
@@ -193,9 +181,9 @@ fun MainSpatialContent() {
         }
 
         Orbiter(
-            position = OrbiterEdge.Start,
+            position = ContentEdge.Start,
             alignment = Alignment.CenterVertically,
-            offset = EdgeOffset.inner(16.dp),
+            offset = 16.dp,
             shape = SpatialRoundedCornerShape(CornerSize(percent = 50))
         ) {
             Surface(
