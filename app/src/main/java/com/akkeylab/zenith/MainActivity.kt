@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -45,6 +46,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.xr.compose.platform.LocalSession
 import androidx.xr.compose.spatial.Subspace
@@ -61,6 +64,7 @@ import androidx.xr.scenecore.GltfModel
 import androidx.xr.scenecore.GltfModelEntity
 import com.akkeylab.zenith.ui.theme.ZenithTheme
 import androidx.core.net.toUri
+import androidx.xr.compose.platform.LocalSpatialCapabilities
 import androidx.xr.compose.spatial.ContentEdge
 import androidx.xr.compose.spatial.Orbiter
 import androidx.xr.compose.subspace.layout.SpatialRoundedCornerShape
@@ -90,8 +94,26 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ZenithTheme {
-                Subspace {
-                    MainSpatialContent()
+                if (LocalSpatialCapabilities.current.isSpatialUiEnabled) {
+                    Subspace {
+                        MainSpatialContent()
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "This app is not available in Home Space",
+                            color = Color.Red,
+                            textAlign = TextAlign.Center,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(32.dp)
+                        )
+                    }
                 }
             }
         }
@@ -183,7 +205,7 @@ fun MainSpatialContent() {
         Orbiter(
             position = ContentEdge.Start,
             alignment = Alignment.CenterVertically,
-            offset = 16.dp,
+            offset = 118.dp,
             shape = SpatialRoundedCornerShape(CornerSize(percent = 50))
         ) {
             Surface(
