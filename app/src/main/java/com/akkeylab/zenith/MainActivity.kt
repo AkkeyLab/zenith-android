@@ -54,8 +54,6 @@ import androidx.xr.compose.spatial.Subspace
 import androidx.xr.compose.subspace.SpatialPanel
 import androidx.xr.compose.subspace.layout.SubspaceModifier
 import androidx.xr.compose.subspace.layout.height
-import androidx.xr.compose.subspace.layout.movable
-import androidx.xr.compose.subspace.layout.resizable
 import androidx.xr.compose.subspace.layout.width
 import androidx.xr.runtime.math.Pose
 import androidx.xr.runtime.math.Quaternion
@@ -67,6 +65,8 @@ import androidx.core.net.toUri
 import androidx.xr.compose.platform.LocalSpatialCapabilities
 import androidx.xr.compose.spatial.ContentEdge
 import androidx.xr.compose.spatial.Orbiter
+import androidx.xr.compose.subspace.MovePolicy
+import androidx.xr.compose.subspace.ResizePolicy
 import androidx.xr.compose.subspace.layout.SpatialRoundedCornerShape
 import java.nio.file.Paths
 import java.nio.file.Path
@@ -130,11 +130,12 @@ fun MainSpatialContent() {
     SpatialPanel(
         SubspaceModifier
             .width(1280.dp)
-            .height(800.dp)
-            .resizable()
-            .movable()
+            .height(800.dp),
+        dragPolicy = MovePolicy(),
+        resizePolicy = ResizePolicy()
     ) {
         Surface(
+            modifier = Modifier.fillMaxSize(),
             shape = RoundedCornerShape(32.dp),
             color = Color.White.copy(alpha = 0.9f),
             tonalElevation = 8.dp,
