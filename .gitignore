@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# --- injected claude context ---
+.claude/*
+# --- injected claude context ---
